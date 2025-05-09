@@ -1,6 +1,10 @@
 #pragma once
 #include <cstdint>
 
+<<<<<<< HEAD
+=======
+#include "TX/Platform.h"
+>>>>>>> f3c7944 (WIP)
 #include "Transport/Result.h"
 #include "Transport/task/Task.h"
 #include "Transport/task/TaskListener.h"
@@ -18,16 +22,16 @@ class TaskManager {
     TX_ASSERT(TX::IsPowerOfTen(factor));
   }
 
-  [[nodiscard]] int32_t createTask(Task::Kind kind = Task::Kind::Auto,
+  TX_NODISCARD int32_t CreateTask(Task::Kind kind = Task::Kind::Auto,
                                    TaskListener *listener = nullptr) const;
-  TP_RESULT startTask(int32_t task_id);
-  TP_RESULT stopTask(int32_t task_id);
-  TP_RESULT suspendTask(int32_t task_id);
-  TP_RESULT resumeTask(int32_t task_id);
-  TP_RESULT getProxyURL(int32_t task_id, int32_t clip_no) const;
+  TP_RESULT StartTask(int32_t task_id);
+  TP_RESULT StopTask(int32_t task_id);
+  TP_RESULT SuspendTask(int32_t task_id);
+  TP_RESULT ResumeTask(int32_t task_id);
+  TP_RESULT GetProxyURL(int32_t task_id) const;
 
  private:
-  [[nodiscard]] int32_t genTaskId(Task::Kind kind) const noexcept;
+  TX_NODISCARD int32_t GenTaskId(Task::Kind kind) const noexcept;
 
  private:
   int32_t factor_;

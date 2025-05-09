@@ -7,6 +7,7 @@ set(TX_HEADERS
   Endian.h
   Exception.h
   Function.h
+  Log.h
   Memory.h
   Option.h
   Own.h
@@ -14,10 +15,10 @@ set(TX_HEADERS
   Platform.h
   Result.h
   String.h
+  Thread.h
 
   fs/File.h
   io/Error.h
-  log/Log.h
   net/Addr.h
   net/DNS.h
   net/TCP.h
@@ -27,7 +28,6 @@ set(TX_HEADERS
   sync/Mutex.h
   time/Clock.h
   time/Time.h
-  thread/Thread.h
   runtime/BlockingPool.h
   runtime/Driver.h
   runtime/EventSource.h
@@ -40,16 +40,17 @@ set(TX_HEADERS
 )
 
 set(TX_SOURCES
-  log/Log.cc
+  Log.cc
   net/Addr.cc
   runtime/BlockingPool.cc
 )
 
 set(TX_TEST_SOURCES
+  LogTest.cc
+  ThreadTest.cc
+  
   fs/FileTest.cc
-  log/LogTest.cc
   net/AddrTest.cc
-  thread/ThreadTest.cc
   runtime/BlockingPoolTest.cc
   runtime/SingleThreadSchedulerTest.cc
   runtime/RuntimeTest.cc

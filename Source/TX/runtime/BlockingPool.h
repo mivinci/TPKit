@@ -8,7 +8,7 @@
 #include "TX/runtime/Task.h"
 #include "TX/sync/Condvar.h"
 #include "TX/sync/Mutex.h"
-#include "TX/thread/Thread.h"
+#include "TX/Thread.h"
 
 namespace TX {
 

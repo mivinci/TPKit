@@ -4,7 +4,7 @@
 #include "TX/Option.h"
 #include "TX/Platform.h"
 #include "TX/String.h"
-#include "TX/log/Log.h"
+#include "TX/Log.h"
 
 namespace TX {
 template <class T, class E>

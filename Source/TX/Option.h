@@ -4,7 +4,7 @@
 
 #include "TX/Memory.h"
 #include "TX/Platform.h"
-#include "TX/log/Log.h"
+#include "TX/Log.h"
 
 namespace TX {
 

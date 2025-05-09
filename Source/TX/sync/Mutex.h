@@ -5,6 +5,7 @@
 #include <windows.h>
 #else
 #include <pthread.h>
+#include <errno.h>
 #endif
 
 namespace TX {

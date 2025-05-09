@@ -1,10 +1,12 @@
 #pragma once
-#include <string_view>
 #include <string>
+#include <string_view>
+
+#include "TX/Platform.h"
 
 namespace TX {
 class Exception : std::exception {
-public:
+ public:
   explicit Exception(const std::string_view &message,
                      const std::string_view &scope = "TX") {
     info.append("[");
@@ -15,11 +17,11 @@ public:
     // TODO: stacktrace
   }
 
-  [[nodiscard]] const char *what() const noexcept override {
+  TX_NODISCARD const char *what() const noexcept override {
     return info.c_str();
   }
 
-private:
+ private:
   std::string info;
 };
-} // namespace TX
+}  // namespace TX

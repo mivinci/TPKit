@@ -1,6 +1,6 @@
 #include "TX/runtime/BlockingPool.h"
 
-#include "TX/thread/Thread.h"
+#include "TX/Thread.h"
 
 namespace TX {
 void BlockingPool::SpawnTask(UnownedTask &&task) {

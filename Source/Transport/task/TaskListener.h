@@ -6,7 +6,6 @@ namespace TP {
 
 struct TaskEvent {
   int32_t task_id;
-  int32_t clip_no;
 };
 
 class TaskListener {
