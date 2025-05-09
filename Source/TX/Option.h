@@ -2,9 +2,8 @@
 
 #include <utility>
 
-#include "TX/Memory.h"
 #include "TX/Platform.h"
-#include "TX/log/Log.h"
+#include "TX/Log.h"
 
 namespace TX {
 
@@ -18,8 +17,8 @@ class Option {
   Option(class None) : some_(false) {}
   Option(T &t) : some_(true), t_(t) {}
   Option(T &&t) : some_(true), t_(std::move(t)) {}
-  Option(Option<T> &other) : some_(other.some_), t_(other.t_) {}
-  Option(Option<T> &&other) noexcept : some_(other.some_), t_(other.t_) {
+  Option(Option &other) : some_(other.some_), t_(other.t_) {}
+  Option(Option &&other) noexcept : some_(other.some_), t_(other.t_) {
     other = None;
   }
   // value's destructor can be non-trivial, so we have to call it explicitly.
@@ -33,12 +32,12 @@ class Option {
     return *this;
   }
 
-  Option &operator=(const Option<T> &other) {
+  Option &operator=(const Option &other) {
     some_ = other.some_;
     t_ = other.t_;
     return *this;
   };
-  Option &operator=(Option<T> &&other) noexcept {
+  Option &operator=(Option &&other) noexcept {
     some_ = other.some_;
     t_ = other.t_;
     other = None;
@@ -46,12 +45,12 @@ class Option {
   }
 
   bool operator==(class None) const { return !some_; }
-  bool operator==(const Option<T> &other) const {
+  bool operator==(const Option &other) const {
     return some_ ? t_ == other.t_ : other == None;
   }
 
-  bool IsSome() { return some_; }
-  bool IsNone() { return !some_; }
+  TX_NODISCARD bool IsSome() const { return some_; }
+  TX_NODISCARD bool IsNone() const { return !some_; }
 
   T Unwrap() const {
     if (!some_) {
@@ -65,7 +64,7 @@ class Option {
   T UnwrapOr(T &&other) const { return some_ ? t_ : std::move(other); }
   T UnwrapOr(T (*f)()) const { return some_ ? t_ : f(); }
 
-  Option<T> Take() {
+  T Take() {
     if (!some_) return None;
     auto t = std::move(*this);
     *this = None;
@@ -80,13 +79,7 @@ class Option {
 };
 
 template <typename T>
-inline Option<T> Some(T &t) {
+Option<T> Some(T &t) {
   return Option<T>(t);
 }
-
-#define TX_IF_SOME(val, expr) \
-  if (expr.IsSome()) {        \
-    auto val = expr.Unwrap(); \
-  }
-
 }  // namespace TX

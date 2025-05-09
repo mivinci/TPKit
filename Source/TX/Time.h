@@ -1,9 +1,9 @@
 #pragma once
+#include "TX/Clock.h"
+#include "TX/Duration.h"
 #include "TX/Platform.h"
-#include "TX/time/Clock.h"
-#include "TX/time/Duration.h"
 
-namespace TX { 
+namespace TX {
 constexpr uint64_t WALL_NANO_MASK = (1ULL << 30) - 1;
 constexpr uint64_t MONO_NANO_MASK = (1ULL << 63) - 1;
 
@@ -13,39 +13,36 @@ class Time final {
     auto wall = Clock::Real();
     auto mono = Clock::Monotonic();
     wall_ = (wall.sec << 30) | (wall.nsec);
-    mono_ = (1ULL << 63) | (mono.sec * 1'000'000'000 + mono.nsec);
+    mono_ = (1ULL << 63) | (mono.sec * 1000000000 + mono.nsec);
   }
   explicit Time(uint64_t nsec)
-      : wall_(((nsec % 1'000'000'000) << 30) | (nsec % 1'000'000'000)),
-        mono_(0) {}
+      : wall_(((nsec % 1000000000) << 30) | (nsec % 1000000000)), mono_(0) {}
 
   TX_NODISCARD uint64_t Unix() const { return sec(); }
   TX_NODISCARD uint64_t UnixMilli() const {
-    return sec() * 1'000 + nsec() / 1'000'000;
+    return sec() * 1000 + nsec() / 1000000;
   }
   TX_NODISCARD uint64_t UnixMicro() const {
-    return sec() / 1'000'000 + nsec() / 1'000;
+    return sec() / 1000000 + nsec() / 1000;
   }
-  TX_NODISCARD uint64_t UnixNano() const {
-    return sec() * 1'000'000'000 + nsec();
-  }
+  TX_NODISCARD uint64_t UnixNano() const { return sec() * 1000000000 + nsec(); }
 
   Time operator+(Duration d) {
-    int64_t d_sec = d.inner / 1'000'000'000;
-    int64_t d_nsec = d.inner % 1'000'000'000;
+    int64_t d_sec = d.inner_ / 1000000000;
+    int64_t d_nsec = d.inner_ % 1000000000;
     uint64_t t_sec = sec();
     uint64_t t_nsec = nsec();
     wall_ = ((t_sec + d_sec) << 30) | (t_nsec + d_nsec);
-    mono_ += d.inner;
+    mono_ += d.inner_;
     return *this;
   }
   Time operator-(Duration d) {
-    int64_t d_sec = d.inner / 1'000'000'000;
-    int64_t d_nsec = d.inner % 1'000'000'000;
+    int64_t d_sec = d.inner_ / 1000000000;
+    int64_t d_nsec = d.inner_ % 1000000000;
     int64_t t_sec = sec();
     int64_t t_nsec = nsec();
     wall_ = ((t_sec - d_sec) << 30) | (t_nsec - d_nsec);
-    mono_ -= d.inner;
+    mono_ -= d.inner_;
     return *this;
   }
   Duration operator-(Time other) {
@@ -53,7 +50,7 @@ class Time final {
     if (mono_ & other.mono_ & (MONO_NANO_MASK + 1))
       d = mono_ - other.mono_;
     else
-      d = (sec() - other.sec()) * 1'000'000'000 + (nsec() + other.nsec());
+      d = (sec() - other.sec()) * 1000000000 + (nsec() + other.nsec());
     return Duration(d);
   }
 

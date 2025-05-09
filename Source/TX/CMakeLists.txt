@@ -1,58 +1,66 @@
 enable_testing()
 
 set(TX_HEADERS
+  Addr.h
   Assert.h
   Bits.h
-  ByteArray.h
+  Clock.h
+  Condvar.h
+  Duration.h
   Endian.h
   Exception.h
+  Format.h
   Function.h
+  Log.h
   Memory.h
+  Mutex.h
   Option.h
   Own.h
   Path.h
   Platform.h
   Result.h
+  RunLoop.h
+  Span.h
   String.h
+  Time.h
+  Thread.h
+  WaitGroup.h
 
-  fs/File.h
-  io/Error.h
-  log/Log.h
-  net/Addr.h
-  net/DNS.h
-  net/TCP.h
-  net/UDP.h
-  net/UNIX.h
-  sync/Condvar.h
-  sync/Mutex.h
-  time/Clock.h
-  time/Time.h
-  thread/Thread.h
-  runtime/BlockingPool.h
-  runtime/Driver.h
-  runtime/EventSource.h
-  runtime/EventLoop.h
-  runtime/Runtime.h
-  runtime/Scheduler.h
-  runtime/SingleThreadScheduler.h
-  runtime/MultiThreadScheduler.h
-  runtime/Task.h
+#  fs/File.h
+#  io/Error.h
+#  net/DNS.h
+#  net/TCP.h
+#  net/UDP.h
+#  net/UNIX.h
+#  runtime/BlockingPool.h
+#  runtime/Driver.h
+#  runtime/EventSource.h
+#  runtime/EventLoop.h
+#  runtime/Runtime.h
+#  runtime/Scheduler.h
+#  runtime/SingleThreadScheduler.h
+#  runtime/MultiThreadScheduler.h
+#  runtime/Task.h
 )
 
 set(TX_SOURCES
-  log/Log.cc
-  net/Addr.cc
-  runtime/BlockingPool.cc
+  Addr.cc
+  Log.cc
+  RunLoop.cc
+
+#  runtime/BlockingPool.cc
 )
 
 set(TX_TEST_SOURCES
-  fs/FileTest.cc
-  log/LogTest.cc
-  net/AddrTest.cc
-  thread/ThreadTest.cc
-  runtime/BlockingPoolTest.cc
-  runtime/SingleThreadSchedulerTest.cc
-  runtime/RuntimeTest.cc
+  AddrTest.cc
+  LogTest.cc
+  ThreadTest.cc
+  RunLoopTest.cc
+
+#  fs/FileTest.cc
+#  runtime/BlockingPoolTest.cc
+#  runtime/SingleThreadSchedulerTest.cc
+#  runtime/RuntimeTest.cc
 )
 
 add_library(TX ${TX_HEADERS} ${TX_SOURCES})

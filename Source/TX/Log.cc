@@ -1,9 +1,8 @@
-#include "TX/log/Log.h"
-
-#include <cstdio>
+#include "TX/Log.h"
 
 #include "TX/Exception.h"
 #include "fmt/base.h"
+#include "fmt/format.h"
 #ifdef _WIN32
 #else
 #include <cstdlib>
@@ -41,30 +40,30 @@ struct fmt::formatter<TX::Logger::Level> : formatter<string_view> {
 namespace TX {
 static Logger::Reporter GLOBAL_REPORTER;
 static Logger::Formatter GLOBAL_FORMATTER;
-Logger::Level Logger::level_ = Logger::Level::Debug;
+Logger::Level Logger::level_ = Level::Debug;
 Logger::Reporter *Logger::reporter_ = &GLOBAL_REPORTER;
 Logger::Formatter *Logger::formatter_ = &GLOBAL_FORMATTER;
 
 void Logger::Log::clean() {
 #ifdef TPKIT_SOURCE_DIR
-  file = file.substr(sizeof TPKIT_SOURCE_DIR);
+  file_ = file_.substr(sizeof TPKIT_SOURCE_DIR);
 #endif
 }
 
 void Logger::Log::output() const {
-  Logger::reporter_->report(*this);
-  if (level == Logger::Level::Fatal) abort();
+  reporter_->report(*this);
+  if (level_ == Level::Fatal) abort();
 }
 
-void Logger::Log::throwException() const { throw Exception(message, scope); }
+void Logger::Log::throwException() const { throw Exception(message_, scope_); }
 
 std::string Logger::Formatter::format(const Logger::Log &log) {
-  return fmt::format("[{:s}][{:d}][{:s}][{:s}:{:d}][{:s}] {}", log.level,
-                     log.time.UnixNano(), log.scope, log.file, log.line,
-                     log.function, log.message);
+  return fmt::format("[{:s}][{:d}][{:s}][{:s}:{:d}][{:s}] {}", log.level_,
+                     log.time_.UnixNano(), log.scope_, log.file_, log.line_,
+                     log.function_, log.message_);
 }
 
-void Logger::Reporter::report(const Logger::Log &log) {
-  fmt::println("{:s}", Logger::formatter_->format(log));
+void Logger::Reporter::report(const Log &log) {
+  fmt::println("{:s}", formatter_->format(log));
 }
 }  // namespace TX

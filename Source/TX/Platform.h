@@ -52,11 +52,11 @@ namespace TX {
 #if __cplusplus >= 201703L
 #define TX_CONSTEXPR_IF(expr) if constexpr (expr)
 #elif defined(__GNUC__) || defined(__clang__)
-#define TX_CONSTEXPR_IF if (__builtin_constant_p(expr))
+#define TX_CONSTEXPR_IF(expr) if (__builtin_constant_p(expr))
 #elif defined(_MSC_VER)
-#define TX_CONSTEXPR_IF if (expr)
+#define TX_CONSTEXPR_IF(expr) if (expr)
 #else
-#define TX_CONSTEXPR_IF if (expr)
+#define TX_CONSTEXPR_IF(expr) if (expr)
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)

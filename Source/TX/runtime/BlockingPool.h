@@ -3,12 +3,12 @@
 #include <queue>
 #include <unordered_map>
 
+#include "TX/Condvar.h"
 #include "TX/Function.h"
+#include "TX/Mutex.h"
 #include "TX/Own.h"
+#include "TX/Thread.h"
 #include "TX/runtime/Task.h"
-#include "TX/sync/Condvar.h"
-#include "TX/sync/Mutex.h"
-#include "TX/thread/Thread.h"
 
 namespace TX {
 

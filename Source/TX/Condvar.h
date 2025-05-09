@@ -1,7 +1,7 @@
 #pragma once
 #include "TX/Assert.h"
+#include "TX/Mutex.h"
 #include "TX/Option.h"
-#include "TX/sync/Mutex.h"
 
 namespace TX {
 class Condvar {
@@ -28,13 +28,13 @@ class Condvar {
 #endif
   }
   template <typename T>
-  bool Wait(MutexGuard<T> &guard, Option<Duration> timeout = None) {
-    if (timeout.IsSome()) {
+  bool Wait(MutexGuard<T> &guard, Duration timeout = Duration::FOREVER) {
+    if (timeout != Duration::FOREVER) {
 #ifdef _WIN32
-      DWORD ms = timeout.Unwrap().MilliSeconds();
+      DWORD ms = timeout.MilliSeconds();
       SleepConditionVariableCS(&cv, &guard.lock_->cs, ms);
 #else
-      Clock::TimePoint tp = timeout.Unwrap().ToTimePoint();
+      Clock::TimePoint tp = timeout.ToTimePoint();
       int rc = pthread_cond_timedwait(&cv_, &guard.lock_->inner_,
                                       reinterpret_cast<const timespec *>(&tp));
       if (rc == ETIMEDOUT) return true;

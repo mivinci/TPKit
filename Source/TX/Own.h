@@ -29,6 +29,10 @@ class Own {
     return t;
   }
 
+  T *Leak() {
+    return t_;
+  }
+
   void Reset(T *t = nullptr) {
     if (t_ != t) {
       delete t_;

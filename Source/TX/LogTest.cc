@@ -1,4 +1,4 @@
-#include "TX/log/Log.h"
+#include "TX/Log.h"
 #include "gtest/gtest.h"
 
 namespace TX {

@@ -24,8 +24,7 @@ class IPv6Addr {
   explicit IPv6Addr(const uint16 a, const uint16 b, const uint16 c,
                     const uint16 d, const uint16 e, const uint16 f,
                     const uint16 g, const uint16 h) {
-    // ReSharper disable once CppDFAUnreachableCode
-    if (TX_LITTLE_ENDIAN) {
+    TX_CONSTEXPR_IF (TX_LITTLE_ENDIAN) {
       const uint16 octets[8] = {swap(a), swap(b), swap(c), swap(d),
                                 swap(e), swap(f), swap(g), swap(h)};
       std::memcpy(octets_, octets, sizeof(octets));
@@ -40,7 +39,7 @@ class IPv6Addr {
   }
 
   static IPv6Addr FromBits(const uint128 bits) {
-    IPv6Addr ip;
+    IPv6Addr ip{};
     bits.ToBigEndianBytes(ip.octets_);
     return ip;
   }
@@ -124,13 +123,15 @@ struct SocketAddrV6 {
 
 class SocketAddr {
  public:
-  explicit SocketAddr(const IPv4Addr &ip, const uint16 port) : is_v4_(true) {
-    v4_.ip = ip;
-    v4_.port = port;
+  explicit SocketAddr(const IPv4Addr &ip, const uint16 port)
+      : is_v4_(true), addr_({}) {
+    addr_.v4_.ip = ip;
+    addr_.v4_.port = port;
   }
-  explicit SocketAddr(const IPv6Addr &ip, const uint16 port) : is_v4_(false) {
-    v6_.ip = ip;
-    v6_.port = port;
+  explicit SocketAddr(const IPv6Addr &ip, const uint16 port)
+      : is_v4_(false), addr_({}) {
+    addr_.v6_.ip = ip;
+    addr_.v6_.port = port;
   }
 
   static Result<SocketAddr, AddrParseError> Parse(const String &addr);
@@ -140,6 +141,6 @@ class SocketAddr {
   union {
     SocketAddrV4 v4_;
     SocketAddrV6 v6_;
-  };
+  } addr_;
 };
 }  // namespace TX

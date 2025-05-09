@@ -1,5 +1,6 @@
 #pragma once
 #include "TX/Assert.h"
+#include "TX/Memory.h"
 #include "TX/Option.h"
 #ifdef _WIN32
 #include <windows.h>
@@ -59,10 +60,10 @@ class Mutex {
 #ifdef _WIN32
     locked = TryEnterCriticalSection(&cs);
 #else
-    int ret = pthread_mutex_trylock(&inner_);
-    if (ret == 0)
+    int rc = pthread_mutex_trylock(&inner_);
+    if (rc == 0)
       locked = true;
-    else if (ret == EBUSY)
+    else if (rc == EBUSY)
       locked = false;
     else
       TX_FATAL("pthread_mutex_trylock: EINVAL");
@@ -70,7 +71,7 @@ class Mutex {
     return locked ? TX::Some(MutexGuard<T>(this)) : TX::None;
   }
 
-  Option<const T> Get() const { return TX::Some(t_); }
+  T *Leak() noexcept { return &t_; }
 
  private:
   void Unlock() {
@@ -95,7 +96,6 @@ class Mutex {
 template <typename T>
 class MutexGuard {
  public:
-  explicit MutexGuard(Mutex<T> *lock) : lock_(lock) {}
   TX_DISALLOW_COPY(MutexGuard)
   MutexGuard(MutexGuard &&other) noexcept {
     lock_ = other.lock_;
@@ -117,6 +117,9 @@ class MutexGuard {
   T *operator->() { return &lock_->t_; }
 
  private:
+  explicit MutexGuard(Mutex<T> *lock) : lock_(lock) {}
+
+  friend class Mutex<T>;
   friend class Condvar;
   Mutex<T> *lock_;
 };

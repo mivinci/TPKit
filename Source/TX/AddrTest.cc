@@ -1,4 +1,4 @@
-#include "TX/net/Addr.h"
+#include "Addr.h"
 #include "gtest/gtest.h"
 
 namespace TX {

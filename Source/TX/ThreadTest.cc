@@ -2,10 +2,10 @@
 
 #include <atomic>
 
+#include "TX/Condvar.h"
+#include "TX/Duration.h"
 #include "TX/Own.h"
-#include "TX/sync/Condvar.h"
-#include "TX/thread/Thread.h"
-#include "TX/time/Duration.h"
+#include "TX/Thread.h"
 
 namespace TX {
 TEST(ThreadTest, Join) {
@@ -18,14 +18,14 @@ TEST(ThreadTest, Join) {
 
 TEST(ThreadTest, Detach) {
   Condvar cv;
-  Mutex<int> n(114514);
+  Mutex n(114514);
   Thread t([&]() {
     *(n.Lock()) = 42;
     cv.NotifyOne();
   });
   t.Detach();
   auto n_guard = n.Lock();
-  bool timeout = cv.Wait(n_guard, Duration::Second(1));
+  const bool timeout = cv.Wait(n_guard, Duration::Second(1));
   EXPECT_EQ(*n_guard, timeout ? 114514 : 42);
   if (timeout) {
     // In case of timeout, we need to wait for the detached thread to finish.
@@ -36,14 +36,14 @@ TEST(ThreadTest, Detach) {
 }
 
 TEST(ThreadTest, Adder) {
-  int m = 3, N = 100;
-  std::atomic<int> n = 0;
+  constexpr int m = 3, N = 100;
+  std::atomic n = 0;
   {
     std::vector<Own<Thread>> threads;
     threads.reserve(m);
     for (int i = 0; i < m; i++) {
       threads.push_back(Thread::Spawn([&]() {
-        for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
           n.fetch_add(1);
         }
       }));

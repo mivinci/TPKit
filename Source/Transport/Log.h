@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TX/log/Log.h"
+#include "TX/Log.h"
 
 namespace TP {
 #define TP_DEBUG(...) TX_DEBUG_SCOPE("TP", __VA_ARGS__)

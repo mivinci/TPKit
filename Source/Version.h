@@ -1,8 +1,6 @@
 #ifndef TPKIT_H_
 #define TPKIT_H_
 
-#include "API/Transport.h"
-
 struct TPKit_Version {
   int major;
   int minor;
